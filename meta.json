@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BreastScan Twin</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="shell">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <a class="brand" href="#overview" data-nav="overview">
+      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="" width="34" height="34">
+      <span><b>BreastScan</b> Twin</span>
+    </a>
+    <nav class="nav">
+      <a href="#overview" data-nav="overview"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Overview</span></a>
+      <a href="#twin" data-nav="twin"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/><path d="M18 4l2-2M20 8h2"/></svg><span>Digital Twin</span></a>
+      <a href="#scan" data-nav="scan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="4"/><path d="M3 12h3M18 12h3"/></svg><span>Scan Lab</span></a>
+      <a href="#insights" data-nav="insights"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Model Insights</span></a>
+      <a href="#learn" data-nav="learn"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></svg><span>Learn</span></a>
+      <a href="#about" data-nav="about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>About</span></a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="status" id="scanStatus"><span class="dot"></span><span>Checking scan model…</span></div>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle light / dark theme">
+        <svg viewBox="0 0 24 24" class="i-moon"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+        <svg viewBox="0 0 24 24" class="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
+        <span>Theme</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ============ OVERVIEW ============ -->
+    <section class="page" id="page-overview">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Machine learning · Breast cancer screening</p>
+          <h1>Breast cancer decision support that <em>shows its reasoning.</em></h1>
+          <p class="lede">Three models in one workstation: a cytology Digital Twin, a mammogram reader and a histology reader. Every result comes with a heatmap of where the model looked, a suggested BI-RADS or pathology category, and a referral pathway you can print.</p>
+          <div class="cta">
+            <a class="btn primary" href="#scan" data-nav="scan">Open the Scan Lab <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn ghost" href="#twin" data-nav="twin">Digital Twin</a>
+            <a class="btn ghost" href="#learn" data-nav="learn">BI-RADS guide</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <svg viewBox="0 0 400 400" class="orb">
+            <defs>
+              <radialGradient id="g1" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="var(--brand)" stop-opacity=".55"/><stop offset="1" stop-color="var(--brand)" stop-opacity="0"/></radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="190" fill="url(#g1)"/>
+            <g class="rings" fill="none" stroke="currentColor">
+              <circle cx="200" cy="200" r="150" stroke-opacity=".18"/>
+              <circle cx="200" cy="200" r="115" stroke-opacity=".28" stroke-dasharray="3 7"/>
+              <circle cx="200" cy="200" r="80" stroke-opacity=".4"/>
+            </g>
+            <g class="cells"></g>
+            <line class="scanline" x1="40" x2="360" y1="200" y2="200"/>
+          </svg>
+          <div class="hero-chip c1"><b id="heroAcc">—</b><span>Digital Twin accuracy</span></div>
+          <div class="hero-chip c2"><b id="heroAuc">—</b><span>histology AUC</span></div>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <a class="tile link" href="#twin" data-nav="twin"><span class="k">Digital Twin · cytology</span><b id="tileTwin">—</b><span class="s" id="tileTwinSub">test accuracy · 569 FNA cases</span></a>
+        <a class="tile link" href="#scan" data-nav="scan" data-kind="mammogram"><span class="k">Mammogram model</span><b id="tileMammo">—</b><span class="s" id="tileMammoSub">ROC AUC · CBIS-DDSM</span></a>
+        <a class="tile link" href="#scan" data-nav="scan" data-kind="histopathology"><span class="k">Histology model</span><b id="tileHisto">—</b><span class="s" id="tileHistoSub">ROC AUC · IDC patches</span></a>
+        <div class="tile"><span class="k">Clinical output</span><b>BI-RADS</b><span class="s">category + referral pathway for every result</span></div>
+      </div>
+
+      <h2 class="section-title">How the project was built</h2>
+      <ol class="flow">
+        <li><span>01</span><b>Three datasets</b><p>569 FNA cases (Wisconsin), 277k histology patches (IDC), 3,103 CBIS-DDSM mammograms.</p></li>
+        <li><span>02</span><b>Digital Twin</b><p>8 algorithms compared by 10-fold CV; a standardised RBF-SVM won (97.7% test accuracy).</p></li>
+        <li><span>03</span><b>Histology CNN</b><p>EfficientNet-B0 fine-tuned on patches, split by patient so test patients are unseen.</p></li>
+        <li><span>04</span><b>Mammogram CNN</b><p>Breast-cropped, CLAHE-enhanced full mammograms; official CBIS-DDSM test split.</p></li>
+        <li><span>05</span><b>Explainability</b><p>Class-activation heatmaps and feature-level drivers show why each result was given.</p></li>
+        <li><span>06</span><b>Clinical pathway</b><p>Scores become BI-RADS / pathology / cytology categories with referral advice and a printable report.</p></li>
+      </ol>
+
+      <div class="notice">
+        <svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+        <p><b>Research and education only.</b> This tool is not a medical device and must not be used to diagnose anyone. Always consult a qualified clinician.</p>
+      </div>
+    </section>
+
+    <!-- ============ DIGITAL TWIN ============ -->
+    <section class="page" id="page-twin" hidden>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Patient Digital Twin</p>
+          <h1>Tune the patient. <em>Watch the model respond.</em></h1>
+          <p class="lede small">Every slider is one of the 30 measurements the SVM was trained on. Markers show the benign <i class="mk b"></i> and malignant <i class="mk m"></i> averages.</p>
+        </div>
+        <div class="head-actions">
+          <button class="btn ghost sm" id="btnRandom"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Random case</button>
+          <button class="btn ghost sm" id="btnTwinReport"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>Report</button>
+          <button class="btn ghost sm" id="btnCopy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></svg>Copy profile</button>
+        </div>
+      </header>
+
+      <div class="presets" id="presets"></div>
+
+      <div class="twin-grid">
+        <div class="panel controls">
+          <div class="tabs" role="tablist" id="groupTabs">
+            <button role="tab" class="on" data-group="mean">Mean</button>
+            <button role="tab" data-group="se">Standard error</button>
+            <button role="tab" data-group="worst">Worst</button>
+            <button role="tab" data-group="paste">Paste values</button>
+          </div>
+          <div id="sliders" class="sliders"></div>
+          <div id="pastePane" class="paste" hidden>
+            <p>Paste 30 comma- or tab-separated values in the dataset's column order (radius_mean … fractal_dimension_worst). A row copied from your CSV without the id/diagnosis columns works.</p>
+            <textarea id="pasteBox" rows="5" spellcheck="false" placeholder="17.99, 10.38, 122.8, 1001, 0.1184, ..."></textarea>
+            <button class="btn primary sm" id="pasteApply">Apply values</button>
+            <span class="paste-msg" id="pasteMsg"></span>
+          </div>
+        </div>
+
+        <div class="panel result" id="resultPanel">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 240 150" class="gauge">
+              <defs>
+                <linearGradient id="gGrad" x1="0" x2="1"><stop offset="0" stop-color="var(--benign)"/><stop offset=".5" stop-color="var(--mid)"/><stop offset="1" stop-color="var(--malignant)"/></linearGradient>
+              </defs>
+              <path d="M20 130 A100 100 0 0 1 220 130" class="g-track"/>
+              <path d="M20 130 A100 100 0 0 1 220 130" class="g-fill" id="gFill" stroke="url(#gGrad)"/>
+              <line x1="120" y1="22" x2="120" y2="34" class="g-tick"/>
+              <g id="gNeedle" class="g-needle"><line x1="120" y1="130" x2="120" y2="44"/><circle cx="120" cy="130" r="7"/></g>
+            </svg>
+            <div class="gauge-read">
+              <b id="probVal">—</b>
+              <span>probability of malignancy</span>
+            </div>
+          </div>
+          <div class="verdict" id="verdict"><span class="pill" id="riskPill">—</span><h3 id="verdictLabel">—</h3></div>
+          <div class="pathway" id="twinPathway"></div>
+
+          <h4 class="mini-title">What is driving this result</h4>
+          <div class="drivers" id="drivers"></div>
+
+          <div class="twin-sub">
+            <div>
+              <h4 class="mini-title">Profile fingerprint <small>(mean features, z-score)</small></h4>
+              <svg viewBox="0 0 260 260" class="radar" id="radar"></svg>
+            </div>
+            <div>
+              <h4 class="mini-title">Most similar real cases</h4>
+              <ul class="neighbours" id="neighbours"></ul>
+            </div>
+          </div>
+          <h4 class="mini-title">Where this patient sits among all 569 cases <small>(PCA)</small></h4>
+          <div class="map-wrap"><canvas id="twinMap" height="240"></canvas>
+            <div class="legend"><span><i class="dotb"></i>Benign</span><span><i class="dotm"></i>Malignant</span><span><i class="dotp"></i>This patient</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCAN LAB ============ -->
+    <section class="page" id="page-scan" hidden>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Scan Lab · AI reading workstation</p>
+          <h1>Read the scan. <em>Route the patient.</em></h1>
+          <p class="lede small">Pick the image type, drop in a scan, and get an AI verdict, a heatmap of where the model looked, a suggested BI-RADS category and a referral pathway.</p>
+        </div>
+        <div class="head-actions">
+          <button class="btn ghost sm" id="btnCase" aria-expanded="false"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Case details</button>
+        </div>
+      </header>
+
+      <div class="kind-picker" id="scanKind" role="radiogroup" aria-label="Scan type">
+        <button data-kind="mammogram" role="radio"><span class="kd"></span><b>Mammogram</b><small>CBIS-DDSM model · BI-RADS</small><em class="kmetric"></em></button>
+        <button data-kind="histopathology" role="radio"><span class="kd"></span><b>Histology slide</b><small>IDC tissue model · pathology</small><em class="kmetric"></em></button>
+        <button data-kind="generic" role="radio"><span class="kd"></span><b>MRI / ultrasound / other</b><small>Image analysis only</small><em class="kmetric"></em></button>
+      </div>
+
+      <form class="case-form panel" id="caseForm" hidden autocomplete="off">
+        <label>Patient / study ID<input name="pid" placeholder="e.g. BST-0142"></label>
+        <label>Age<input name="age" type="number" min="10" max="110" placeholder="years"></label>
+        <label>Side<select name="side"><option value="">–</option><option>Left</option><option>Right</option></select></label>
+        <label>View / specimen<select name="view"><option value="">–</option><option>CC</option><option>MLO</option><option>Core biopsy</option><option>Excision</option><option>Other</option></select></label>
+        <label class="wide">Clinical notes<input name="notes" placeholder="e.g. palpable lump upper outer quadrant, 3 weeks"></label>
+        <p class="case-hint">Used only for the printable report. Nothing is stored or sent anywhere else.</p>
+      </form>
+
+      <div class="model-banner" id="modelBanner"></div>
+
+      <div class="ws">
+        <div class="panel ws-view">
+          <label class="drop" id="drop">
+            <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.bmp,.tif,.tiff,.dcm,.dicom,image/*" hidden>
+            <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+            <b>Drop a scan here or <u>browse</u></b>
+            <span id="dropHint">PNG · JPG · TIFF · DICOM, up to 60 MB</span>
+          </label>
+          <div class="seg-ctl" id="polarityRow" hidden>
+            <span>Lesion appears</span>
+            <div class="segmented" id="polarity">
+              <button data-v="auto" class="on">Auto</button>
+              <button data-v="bright" title="Contrast-enhanced MRI, mammography">Bright</button>
+              <button data-v="dark" title="Ultrasound">Dark</button>
+            </div>
+          </div>
+
+          <div class="viewer" id="viewer" hidden>
+            <div class="toolbar" role="toolbar" aria-label="Viewer tools">
+              <div class="tabs small" id="viewTabs"></div>
+              <div class="tool-group">
+                <button class="tool" id="tZoomOut" title="Zoom out (−)" aria-label="Zoom out"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
+                <span class="zoomv" id="zoomVal">100%</span>
+                <button class="tool" id="tZoomIn" title="Zoom in (+)" aria-label="Zoom in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M20 20l-4-4"/></svg></button>
+                <button class="tool" id="tFit" title="Reset view (0)" aria-label="Reset view"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+                <button class="tool" id="tInvert" title="Invert (I)" aria-label="Invert" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
+              </div>
+            </div>
+            <div class="stage" id="stage">
+              <div class="layer" id="layer">
+                <img id="baseImg" alt="Analysed scan" draggable="false">
+                <img id="heatImg" alt="" draggable="false">
+                <div class="roi" id="roi"></div>
+              </div>
+              <div class="compare" id="compare" hidden>
+                <img id="cmpA" alt=""><img id="cmpB" alt="">
+                <input type="range" min="0" max="100" value="50" id="cmpRange" aria-label="Compare slider">
+                <div class="cmp-bar" id="cmpBar"></div>
+              </div>
+              <div class="scanning" id="scanning"><div class="beam"></div><span>Analysing…</span></div>
+              <div class="stage-hint">Scroll to zoom · drag to pan</div>
+            </div>
+            <div class="sliders-row">
+              <label><span>Heatmap</span><input type="range" id="sHeat" min="0" max="100" value="70"><b id="vHeat">70%</b></label>
+              <label><span>Brightness</span><input type="range" id="sBright" min="50" max="150" value="100"><b id="vBright">100%</b></label>
+              <label><span>Contrast</span><input type="range" id="sContrast" min="50" max="200" value="100"><b id="vContrast">100%</b></label>
+            </div>
+            <p class="caption" id="viewCaption"></p>
+          </div>
+        </div>
+
+        <div class="ws-side">
+          <div class="panel empty" id="scanEmpty">
+            <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="44" /><circle cx="60" cy="60" r="26" stroke-dasharray="4 6"/><circle cx="66" cy="54" r="9" class="blob"/></svg>
+            <p>Results appear here once a scan is analysed.</p>
+            <p class="small-muted">Tip: press <kbd>H</kbd> to toggle the heatmap, <kbd>I</kbd> to invert, <kbd>+</kbd>/<kbd>−</kbd> to zoom.</p>
+          </div>
+          <div id="scanOut" hidden>
+            <div class="panel verdict-card" id="scanVerdict"></div>
+            <div class="panel" id="assessCard"></div>
+            <div class="panel" id="detailCard"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="history" id="historyBox" hidden>
+        <h4 class="mini-title">This session <small>(kept in this browser tab only)</small></h4>
+        <div class="history-row" id="historyRow"></div>
+      </div>
+    </section>
+
+    <!-- ============ INSIGHTS ============ -->
+    <section class="page" id="page-insights" hidden>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Model Insights</p>
+          <h1>How good is the model, <em>honestly?</em></h1>
+          <p class="lede small">Every number here comes from data the model never saw during training.</p>
+        </div>
+      </header>
+      <h2 class="section-title first">Digital Twin <small id="twinModelName"></small></h2>
+      <div class="tiles" id="metricTiles"></div>
+      <div class="ins-grid">
+        <div class="panel">
+          <h3 class="panel-title">Confusion matrix</h3>
+          <div class="cm" id="cm"></div>
+        </div>
+        <div class="panel">
+          <h3 class="panel-title">ROC curve</h3>
+          <svg viewBox="0 0 320 260" class="roc" id="roc"></svg>
+        </div>
+        <div class="panel wide">
+          <h3 class="panel-title">Algorithm comparison <small>10-fold CV accuracy on the training split</small></h3>
+          <div class="algos" id="algos"></div>
+          <div class="legend"><span><i class="sq raw"></i>Raw features</span><span><i class="sq scaled"></i>Standardised</span></div>
+        </div>
+        <div class="panel wide">
+          <h3 class="panel-title">The dataset in two dimensions <small>PCA of the 30 standardised features</small></h3>
+          <div class="map-wrap"><canvas id="bigMap" height="340"></canvas>
+          <div class="legend"><span><i class="dotb"></i>Benign</span><span><i class="dotm"></i>Malignant</span></div></div>
+        </div>
+      </div>
+      <h2 class="section-title">Image models</h2>
+      <div id="imageModels" class="img-models"></div>
+    </section>
+
+    <!-- ============ LEARN ============ -->
+    <section class="page" id="page-learn" hidden>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Understanding breast cancer</p>
+          <h1>Know the disease. <em>Catch it early.</em></h1>
+          <p class="lede small">Breast cancer occurs when breast cells grow uncontrollably. It is one of the most common cancers in women worldwide, and men can develop it too.</p>
+        </div>
+      </header>
+      <div class="learn-grid">
+        <article class="panel learn"><span class="num">01</span><h3>Causes &amp; risk factors</h3><ul><li>Genetic factors (e.g. BRCA1/BRCA2)</li><li>Hormonal factors</li><li>Age and family history</li><li>Lifestyle: alcohol, inactivity, weight</li></ul></article>
+        <article class="panel learn"><span class="num">02</span><h3>Effects</h3><ul><li>Physical and emotional impact</li><li>Changes in body image</li><li>Risk of metastasis to other organs</li></ul></article>
+        <article class="panel learn"><span class="num">03</span><h3>Prevention &amp; screening</h3><ul><li>Regular screening and self-checks</li><li>Healthy lifestyle choices</li><li>Genetic testing if at high risk</li></ul></article>
+        <article class="panel learn wide2">
+          <span class="num">04</span><h3>Benign vs malignant</h3>
+          <div class="bm">
+            <div><b class="tb">Benign</b><p>Non-cancerous. Cells look closer to normal, edges are smooth and regular, and the tumour does not spread.</p></div>
+            <div><b class="tm">Malignant</b><p>Cancerous. Nuclei are larger and irregular, with concave, jagged boundaries. These cells invade nearby tissue and can metastasise.</p></div>
+          </div>
+        </article>
+        <article class="panel learn wide2" id="biradsGuide">
+          <span class="num">05</span><h3>BI-RADS: how findings are graded and acted on</h3>
+          <p class="small-muted">The ACR Breast Imaging Reporting and Data System puts every mammogram, ultrasound or MRI finding into one category, each with a standard next step. In this app the category is <b>suggested</b> by the model; a radiologist assigns the final one.</p>
+          <div class="birads-table" id="biradsTable"></div>
+        </article>
+        <article class="panel learn wide2">
+          <span class="num">06</span><h3>What the 30 features measure</h3>
+          <div class="feat-explain" id="featExplain"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="page" id="page-about" hidden>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">About the author</p>
+          <h1>Engineering meets <em>healthcare.</em></h1>
+        </div>
+      </header>
+      <div class="about panel">
+        <div class="avatar">NK</div>
+        <div>
+          <p>I am an industrial engineering graduate with a keen interest in machine learning and its applications in healthcare. My final-year project focused on developing a poultry defeathering machine, and I have taken part in various projects in technology and engineering.</p>
+          <div class="contact">
+            <a href="mailto:nanakofi8430@gmail.com"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>nanakofi8430@gmail.com</a>
+            <a href="tel:0593140049"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>0593140049</a>
+            <a href="https://github.com/1nkz-coder" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/></svg>1nkz-coder</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<dialog class="report-dlg" id="reportDlg" aria-labelledby="reportTitle">
+  <div class="report-bar">
+    <b id="reportTitle">Report preview</b>
+    <div>
+      <button class="btn ghost sm" id="btnReportCopy">Copy text</button>
+      <button class="btn primary sm" id="btnReportPrint">Print / save as PDF</button>
+      <button class="btn ghost sm" id="btnReportClose" aria-label="Close">Close</button>
+    </div>
+  </div>
+  <article class="report" id="report"></article>
+</dialog>
+<div class="toast" id="toast"></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

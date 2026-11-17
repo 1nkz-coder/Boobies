@@ -1,0 +1,105 @@
+{
+  "model": "StandardScaler \u2192 SVM (RBF, C=3)",
+  "dataset": "Wisconsin Diagnostic Breast Cancer (569 cases, 30 features)",
+  "n_train": 398,
+  "n_test": 171,
+  "accuracy": 0.9766081871345029,
+  "precision": 1.0,
+  "recall": 0.9272727272727272,
+  "f1": 0.9622641509433962,
+  "auc": 0.9985893416927899,
+  "train_accuracy": 0.9874371859296482,
+  "cv_mean": 0.9748076923076923,
+  "cv_std": 0.029909256250656834,
+  "confusion": [
+    [
+      116,
+      0
+    ],
+    [
+      4,
+      51
+    ]
+  ],
+  "roc": {
+    "fpr": [
+      0.0,
+      0.0,
+      0.0,
+      0.0086,
+      0.0086,
+      0.069,
+      0.069,
+      1.0
+    ],
+    "tpr": [
+      0.0,
+      0.0182,
+      0.9636,
+      0.9636,
+      0.9818,
+      0.9818,
+      1.0,
+      1.0
+    ]
+  },
+  "notebook_comparison": [
+    {
+      "name": "LR",
+      "raw": 0.9499,
+      "scaled": 0.9724,
+      "cv_auc": 0.9945,
+      "cv_balanced_acc": 0.9675
+    },
+    {
+      "name": "LDA",
+      "raw": 0.9524,
+      "scaled": 0.9524,
+      "cv_auc": 0.995,
+      "cv_balanced_acc": 0.9434
+    },
+    {
+      "name": "KNN",
+      "raw": 0.9322,
+      "scaled": 0.9622,
+      "cv_auc": 0.9931,
+      "cv_balanced_acc": 0.957
+    },
+    {
+      "name": "CART",
+      "raw": 0.9172,
+      "scaled": 0.9172,
+      "cv_auc": 0.9139,
+      "cv_balanced_acc": 0.9139
+    },
+    {
+      "name": "NB",
+      "raw": 0.9347,
+      "scaled": 0.9347,
+      "cv_auc": 0.99,
+      "cv_balanced_acc": 0.9286
+    },
+    {
+      "name": "SVM",
+      "raw": 0.912,
+      "scaled": 0.9724,
+      "cv_auc": 0.9937,
+      "cv_balanced_acc": 0.9697
+    },
+    {
+      "name": "RF",
+      "raw": 0.9548,
+      "scaled": 0.9548,
+      "cv_auc": 0.9906,
+      "cv_balanced_acc": 0.9509
+    },
+    {
+      "name": "GB",
+      "raw": 0.9521,
+      "scaled": 0.9521,
+      "cv_auc": 0.9867,
+      "cv_balanced_acc": 0.9484
+    }
+  ],
+  "sklearn_version": "1.9.1"
+}
