@@ -1,0 +1,18 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local settings / secrets
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Your own training images (can be large and private): only the folder structure is committed
+data/scans/*/*
+!data/scans/*/.gitkeep

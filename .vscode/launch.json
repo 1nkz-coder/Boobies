@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run BreastScan Twin",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Train scan model (data/scans)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/train_scan_model.py",
+      "args": ["--modality", "MRI"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

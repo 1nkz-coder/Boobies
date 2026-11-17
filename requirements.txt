@@ -1,11 +1,12 @@
-"""
-Re-train the Patient Digital Twin model (the SVM from the notebook).
-
-    python train_model.py
-
-The app also does this automatically the first time it starts.
-"""
-from core.tabular import train_and_save
-
-if __name__ == "__main__":
-    train_and_save(verbose=True)
+# Exact versions, tested together on Python 3.12 (the version render.yaml uses).
+flask==3.1.3
+gunicorn==27.0.1                 # production web server (Render)
+numpy==2.5.5
+scipy==1.18.1
+scikit-learn==1.9.1              # must match models/tabular_model.joblib, otherwise it is rebuilt at start (~1 s)
+scikit-image==0.26.0
+pillow==13.0.0
+joblib==1.6.0
+opencv-python-headless==5.0.0.93 # image preprocessing for the deep models
+onnxruntime==1.32.0              # runs the Kaggle-trained mammogram / histology models (no PyTorch needed)
+pydicom==3.0.2                   # lets the Scan Lab open .dcm files

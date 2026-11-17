@@ -17,11 +17,19 @@
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch { /* ignore */ } },
   };
-  const api = async (url, opts) => {
-    const r = await fetch(url, opts);
-    const j = await r.json().catch(() => ({ error: "Server returned an invalid response." }));
-    if (!r.ok || j.error) throw new Error(j.error || r.statusText);
-    return j;
+  const api = async (url, opts, onBusy) => {
+    for (let attempt = 0; ; attempt++) {
+      let r;
+      try { r = await fetch(url, opts); } catch { throw new Error("Can't reach the server. Check your connection and try again."); }
+      const j = await r.json().catch(() => ({ error: r.status === 502 || r.status === 504 ? "The server is waking up or restarting. Try again in a minute." : "Server returned an invalid response." }));
+      if (r.status === 503 && j.busy && attempt < 40) {  // another scan is running: wait and retry
+        if (onBusy) onBusy(attempt);
+        await new Promise((res) => setTimeout(res, (j.retry_after || 3) * 1000));
+        continue;
+      }
+      if (!r.ok || j.error) throw new Error(j.error || r.statusText);
+      return j;
+    }
   };
   const toast = (msg) => {
     const t = $("#toast"); t.textContent = msg; t.classList.add("on");
@@ -410,14 +418,16 @@
     if (!scan.res) { $("#baseImg").src = URL.createObjectURL(file); $("#heatImg").hidden = true; }
     const fd = new FormData(); fd.append("file", file); fd.append("polarity", scan.polarity); fd.append("kind", scan.kind);
     try {
-      const r = await api("/api/scan", { method: "POST", body: fd });
+      const r = await api("/api/scan", { method: "POST", body: fd }, () => {
+        $("#scanning span").textContent = "Queued: another scan is being analysed…";
+      });
       r.fileName = file.name; r.when = new Date(); r.case = caseData();
       scan.res = r; resetView(); renderScan(r); addHistory(r);
       if (r.kind === "generic" && r.classified && r.id) explainScan(r.id);
     } catch (e) {
       toast(e.message);
       if (!scan.res) $("#viewer").hidden = true;
-    } finally { $("#scanning").classList.remove("on"); }
+    } finally { $("#scanning").classList.remove("on"); $("#scanning span").textContent = "Analysing…"; }
   }
   async function explainScan(id) {
     try {
@@ -445,7 +455,7 @@
       <div class="pbar"><span class="thr" style="left:${(t * 100).toFixed(1)}%" title="Decision threshold ${pct(t)}"></span><i style="left:calc(${(p * 100).toFixed(1)}% - 2px)"></i></div>
       <div class="pbar-l"><span>${r.kind === "histopathology" ? "Non-IDC" : "Benign"}</span><b class="mono">${pct(p)} ${r.kind === "histopathology" ? "slide IDC score" : "malignancy score"}</b><span>${r.kind === "histopathology" ? "IDC" : "Malignant"}</span></div>
       ${r.kind === "histopathology" && r.patches ? `<div class="patch-sum"><div class="patchbar"><i style="width:${(r.patches.fraction * 100).toFixed(1)}%"></i></div>
-        <span>${r.patches.positive} of ${r.patches.tissue} tissue patches flagged as IDC (${pct(r.patches.fraction)})</span></div>` : ""}
+        <span>${r.patches.positive} of ${r.patches.tissue} tissue patches flagged as IDC (${pct(r.patches.fraction)})${r.patches.sampled ? `. Large slide: an even sample of ${r.patches.tissue.toLocaleString()} of its ${r.patches.tissue_all.toLocaleString()} tissue patches was analysed at full resolution.` : ""}</span></div>` : ""}
       <p class="muted small">Model: ${esc(r.model?.architecture || "")} · test AUC ${m.auc != null ? m.auc.toFixed(3) : "—"} · sensitivity ${m.sensitivity != null ? pct(m.sensitivity, 0) : "—"} · specificity ${m.specificity != null ? pct(m.specificity, 0) : "—"}. Decision threshold ${pct(t)} (dashed mark).</p>`;
   }
 

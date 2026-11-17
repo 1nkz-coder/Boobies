@@ -1,0 +1,7 @@
+* text=auto
+# Model and image files are binary: no line-ending conversion on Windows
+*.onnx   binary
+*.joblib binary
+*.pkl    binary
+*.png    binary
+*.jpg    binary

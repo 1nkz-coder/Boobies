@@ -1,0 +1,40 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Deploy: push this repo to GitHub, then open
+#   https://dashboard.render.com/blueprint/new?repo=https://github.com/<you>/<repo>
+services:
+  - type: web
+    name: breastscan-twin
+    runtime: python
+    plan: free                 # 512 MB RAM. Upgrade to "starter" for faster scans and no sleep after 15 min idle.
+    region: frankfurt          # closest Render region to West Africa
+    branch: main
+    autoDeploy: true           # redeploy on every push to main
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn app:app -c gunicorn.conf.py
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      # Keep the process inside 512 MB and predictable on a small CPU
+      - key: ORT_THREADS
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MALLOC_ARENA_MAX
+        value: "2"
+      - key: HISTO_BATCH
+        value: "16"
+      - key: MAX_HISTO_TILES
+        value: "800"           # big slides: an even sample of 800 tissue patches, kept at full resolution
+      - key: MAX_IMAGE_MEGAPIXELS
+        value: "30"            # refuse images larger than 30 MP (memory guard; mammograms are ~10–20 MP)
+      - key: HISTO_MAX_MEGAPIXELS
+        value: "12"            # histology is analysed in colour at full scale, so its limit is lower
+      - key: MAX_UPLOAD_MB
+        value: "60"
+      - key: GUNICORN_THREADS
+        value: "4"             # pages and the Digital Twin stay responsive while a scan runs
+      - key: MAX_CONCURRENT_SCANS
+        value: "1"             # one scan at a time keeps memory under 512 MB ...
+      - key: MAX_WAITING_SCANS
+        value: "1"             # ... one more waits; further uploads get "busy" and the browser retries
